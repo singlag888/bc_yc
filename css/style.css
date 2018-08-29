@@ -1,0 +1,28 @@
+.page-content-wrap{
+	padding:20px;
+}
+.layui-table-cell{
+	text-align:center;
+}
+.layui-laypage .layui-laypage-curr .layui-laypage-em{
+	background: #292b34;
+
+}
+#role_box li {
+	border-bottom:1px solid #eee;
+	padding:10px 0;
+	margin-bottom:10px;
+}
+#role_box li  h2{
+	float:left;
+	cursor:pointer;
+}
+#role_box li>div{
+	clear:both;
+}
+.layui-btn-small {
+	height: 30px;
+	line-height: 30px;
+	padding: 0 10px;
+	font-size: 12px;
+}
