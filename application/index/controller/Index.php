@@ -17,12 +17,12 @@ class Index extends Controller
     public function add()
     {
         //根据分类展示所有的商品
-        $category = db('category')->select();
+      //  $category = db('category')->select();
         //$data =array();
-        foreach ($category as $ke=>$value){
-            $category[$ke]['goodsdata'] = db('goodscz')->where('category_id',$value['id'])->select();
-        }
-        var_dump($category);
+      //  foreach ($category as $ke=>$value){
+       //     $category[$ke]['goodsdata'] = db('goodscz')->where('category_id',$value['id'])->select();
+     //   }
+     //   var_dump($category);
 
         //       return json(['catygory'=>$catygory]);
         // var_dump($catygory);
@@ -35,13 +35,14 @@ class Index extends Controller
 //    var_dump($arr);
 
 
-//        $params['name'] = 'bjpks';
+//        $params['name']   = 'bjpks';
 //        $params['format'] = 'json';
 //        $params['uid'] = '1057123';
 //        $params['token'] = '16c60ff5ac9acc7c715fff30d8cba796619bcb33';
 //        $params['phone'] = input('post.phone');
 //        $params['appkey'] = 'd9890c0773df24c8c86c268538b40534';
 //        $result = wx_http_request('http://api.caipiaokong.cn/lottery/', $params);
+//        var_dump($result);
 //        $data = json_decode($result);
 //        $arr = array();
 //        foreach ($data as $ke => $v) {

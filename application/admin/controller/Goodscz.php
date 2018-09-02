@@ -4,6 +4,7 @@ namespace app\admin\controller;
 
 use think\Controller;
 use app\admin\model;
+use think\Db;
 use think\Request;
 
 class Goodscz extends Controller
@@ -13,7 +14,7 @@ class Goodscz extends Controller
     public function index()
     {
         if (Request()->isAjax()) {
-            $model = new model\Goodscz();
+            $model = new model\Goods();
             $limit = input('get.limit');
             $page = input('get.page');
             $statr = $limit * ($page - 1);
@@ -30,40 +31,66 @@ class Goodscz extends Controller
     public function add()
     {
         if (Request()->isPost()) {
-            $arr = array(
-                'name' => input('post.name'),
-                'category_id' => input('post.category_id'),
-                'url_code' => input('post.url_code'),
-            );
-            $Model = new model\Goodscz();
-            $result = $Model->insert($arr);
-            if ($result) {
-                return json(['code' => 1]);
-            } else {
-                return json(['code' => 0]);
+            $Model = new model\Goods();
+            $number = input('post.number');
+            if ($number >= 101) {
+                return json(['code' => 10]);//不能大于101
+            } else if ($number == 0) {
+                return json(['code' => 11]);//不能小于0
             }
+            $arr = cz();
+            $data = array();
+            for ($i = 0; $i < $number; $i++) {
+                $data[$i]['name'] = $arr[$i];
+            }
+            is_api();
+            $url_code = input('post.url_code');
+            $start_s = input('post.start_s');;
+            $category_id = input('post.category_id');;
+            $inser_data = array();
+            foreach ($data as $j=>$datum) {
+               // var_dump($j);die;
+                $inser_data[]['name'] = $datum['name'];
+
+                $inser_data[$j]['start_s'] = $start_s;
+                $inser_data[$j]['url_code'] = $url_code;
+                $inser_data[$j]['category_id'] = $category_id;
+                $inser_data[$j]['category_id'] = $category_id;
+            }
+            $Model->insertAll($inser_data);
+
+//            if ($result) {
+//                return json(['code' => 1]);
+//            } else {
+//                return json(['code' => 0]);
+//            }
         }
-        $data = db('category')->select();
+        $data = db('good_category')->select();
         return $this->fetch('add', ['data' => $data]);
     }
 
-    public function edit($id)
-    {
-        if (is_numeric($id)) {
-            $arr = array(
-                'name' => input('post.name'),
-                'category_id' => input('post.category_id'),
-                'url_code' => input('post.url_code'),
-            );
-            $result = db('goodscz')->where('id', $id)->update($arr);
-            if ($result) {
-                return json(['code' => 1]);
-            } else {
-                return json(['code' => 0]);
-            }
-        }
-
-    }
+//    public function edit($id)
+//    {
+//        //   $str = '6228480402564890018';
+////        preg_match('/([\d]{2})([\d]{2})([\d]{2})([\d]{2})([\d]{0,})?/', $mt_code,$match);
+////
+////        unset($match[0]);
+////        echo implode(' ', $match);
+//        if (is_numeric($id)) {
+//            $arr = array(
+//                'name' => input('post.name'),
+//                'category_id' => input('post.category_id'),
+//                'url_code' => input('post.url_code'),
+//            );
+//            $result = db('goodscz')->where('id', $id)->update($arr);
+//            if ($result) {
+//                return json(['code' => 1]);
+//            } else {
+//                return json(['code' => 0]);
+//            }
+//        }
+//
+//    }
 
     public function delete($id)
     {

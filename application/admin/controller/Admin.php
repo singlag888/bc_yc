@@ -79,4 +79,24 @@ class Admin extends Controller
             return json(['code' => 0]);
         }
     }
+
+    public function rand_cz()
+    {
+        $id = input('get.id');
+        if ($id >= 101) {
+            echo die('数量过大');
+        } else if ($id == 0) {
+            echo die('必须大于0');
+        }
+        $arr = cz();
+        $data = array();
+        for ($i = 0; $i < $id; ++$i) {
+            $data[$i]['name'] = $arr[$i];
+
+        }
+        foreach ($data as $datum){
+            db('goodsname')->insert($datum);
+        }
+       // var_dump($data);
+    }
 }

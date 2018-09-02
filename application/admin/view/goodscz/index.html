@@ -67,7 +67,12 @@
             , cols: [[ //表头
                 {field: 'id', title: 'ID'},
                 {field: 'name', title: '彩种名称'},
-                {field: 'url_code', title: '编号'}
+                {field: 'url_code', title: '彩种代号'},
+                {field: 'rand_cod', title: '本次号码'},
+                {field: 'award_number', title: '本次开奖号'},
+                {field: 'category_id', title: '所属彩种'},
+                {field: 'start_s', title: '星级等级'},
+                {field: 'is_correct', title: '是否预测成功'}
                 , {field: '', fixed: 'right', title: '操作', width: 300, templet: '#role_operator'}
             ]]
         });
@@ -84,7 +89,7 @@
         //添加操作员
         $('.add_tab').click(function () {
             layer.open({
-                title: '添加管理员帐号',
+                title: '生成彩种',
                 type: 2,
                 content: '/admin/goodscz/add',
                 area: ['640px', '92%']

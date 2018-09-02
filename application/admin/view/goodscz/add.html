@@ -15,15 +15,23 @@
 <body>
 <div class="page-content-wrap">
     <form class="layui-form"> <!-- 提示：如果你不想用form，你可以换成div等任何一个普通元素 -->
+
         <div class="layui-form-item">
-            <label class="layui-form-label">彩种名称</label>
+            <label class="layui-form-label">生成组数</label>
             <div class="layui-input-block">
-                <input type="text" name="name" id="name" lay-verify="required" placeholder="彩种名称"
+                <input type="text" name="number" id="number" lay-verify="required" placeholder="生成多少组"
                        autocomplete="off"
                        class="layui-input">
             </div>
         </div>
-
+        <div class="layui-form-item">
+            <label class="layui-form-label">星级</label>
+            <div class="layui-input-block">
+                <input type="text" name="start_s" id="start_s" lay-verify="required" placeholder="星级"
+                       autocomplete="off"
+                       class="layui-input">
+            </div>
+        </div>
         <div class="layui-form-item">
             <label class="layui-form-label">彩种编号</label>
             <div class="layui-input-block">
@@ -79,12 +87,12 @@
         //  layer.msg('hello');
     });
     $("#tj").click(function () {
-
-        var name = $("#name").val();
-        var category_id = $("select").val();
+        var number = $("#number").val();
+        var start_s = $("#start_s").val();
         var url_code = $("#url_code").val();
-        if (name == "") {
-            layer.alert('彩种名称', {icon: 2});
+        var category_id = $("select").val();
+        if (number == "") {
+            layer.alert('代号不能为空', {icon: 2});
             return false
         } else if (url_code == "") {
             layer.alert('编号必填', {icon: 2});
@@ -92,19 +100,26 @@
         } else if (category_id == "") {
             layer.alert('分类必须选', {icon: 2});
             return false
+        }else if (start_s == "") {
+            layer.alert('星级不能不填写', {icon: 2});
+            return false
         }
 
         $.ajax({
             url: "/admin/goodscz/add",
-            data: {category_id: category_id, name: name, url_code: url_code},
+            data: {category_id: category_id, number: number, url_code: url_code,start_s:start_s},
             type: 'POST',
             success: function (res) {
                 if (res.code == 1) {
-                    layer.alert('彩种添加成功', {icon: 1});
+                    layer.alert('彩种生成完毕', {icon: 1});
                 } else if (res.code == 0) {
                     layer.alert('网络异常', {icon: 2});
                 } else if (res.code == 3) {
                     layer.alert('登录帐号已经存了,请更改', {icon: 5});
+                }else if (res.code == 10) {
+                    layer.alert('不能大于101组', {icon: 5});
+                }else if (res.code == 11) {
+                    layer.alert('不能小于0组', {icon: 5});
                 }
             }
 

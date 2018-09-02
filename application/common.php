@@ -134,6 +134,7 @@ HTML;
     curl_close($ci);
     return $response;
 }
+
 //curl
 function wx_http_request($url, $params, $body = "", $isPost = false, $isImage = false)
 {
@@ -160,4 +161,42 @@ function wx_http_request($url, $params, $body = "", $isPost = false, $isImage = 
     $result = curl_exec($ch);
     curl_close($ch);
     return $result;
+}
+
+function cz()
+{
+    $file_path = 'cz.txt';
+    $file_data = file_get_contents($file_path, FILE_USE_INCLUDE_PATH);
+    return $file_cz = explode(',', $file_data);
+
+}
+
+function is_api()
+{
+    //北京赛车 bjpks       重庆:cqssc
+    $params['name'] = input('post.url_code');
+    $params['format'] = 'json';
+    $params['uid'] = '1057123';
+    $params['token'] = '16c60ff5ac9acc7c715fff30d8cba796619bcb33';
+    $params['phone'] = input('post.phone');
+    $params['appkey'] = 'd9890c0773df24c8c86c268538b40534';
+    $result = wx_http_request('http://api.caipiaokong.cn/lottery/', $params);
+    $cz_zj = json_decode($result);
+    $api_data = array();
+    $url_code = input('post.url_code');
+    foreach ($cz_zj as $ke => $v) {
+        $api_data[$ke]['number'] = $v->number;
+        $api_data[$ke]['dateline'] = $v->dateline;
+        $api_data[$ke]['qs'] = $ke;
+        $api_data[$ke]['cz_b'] = $url_code;
+        $mt_rand_code = mt_rand(10000, 99999);
+        $mt_rand_code2 = mt_rand(10000, 99999);
+        $mt_code = $mt_rand_code . $mt_rand_code2;
+        preg_match('/([\d]{1})([\d]{1})([\d]{1})([\d]{1})([\d]{1})([\d]{1})([\d]{1})([\d]{1})([\d]{1})([\d]{0,})?/', $mt_code, $match);
+        unset($match[0]);
+        //每隔一个逗号隔开
+        $api_data[$ke]['rand_code'] = implode(',', $match);
+       // var_dump($ke)."\n";
+    }//批量 save
+      db('goods_j')->insertAll($api_data);
 }
