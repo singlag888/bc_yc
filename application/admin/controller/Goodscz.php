@@ -19,10 +19,13 @@ class Goodscz extends Controller
             $page = input('get.page');
             $statr = $limit * ($page - 1);
             $search = input('get.search');
+            $count = $model->count();
             $data = $model->where('name', "like", "%{$search}%")->limit($statr, $limit)->select();
             $list['msg'] = "";
+            $list['count'] = $count;
             $list['code'] = 0;
             $list['data'] = $data;
+            // var_dump($list);die;
             return json($list);
         }
         return $this->fetch('index');
@@ -48,17 +51,24 @@ class Goodscz extends Controller
             $start_s = input('post.start_s');;
             $category_id = input('post.category_id');;
             $inser_data = array();
-            foreach ($data as $j=>$datum) {
-               // var_dump($j);die;
-                $inser_data[]['name'] = $datum['name'];
-
-                $inser_data[$j]['start_s'] = $start_s;
-                $inser_data[$j]['url_code'] = $url_code;
-                $inser_data[$j]['category_id'] = $category_id;
-                $inser_data[$j]['category_id'] = $category_id;
+            foreach ($data as $j => $datum) {
+                $inserts['name'] = $inser_data[]['name'] = $datum['name'];
+                $inserts['start_s'] = $inser_data[$j]['start_s'] = $start_s;
+                $inserts['url_code'] = $inser_data[$j]['url_code'] = $url_code;
+                $inserts['category_id'] = $inser_data[$j]['category_id'] = $category_id;
+                $Model->insert($inserts);
+                $goods_id['goods_id'] = db('goods')->getLastInsID();
+                //获取所有Goods_id 存入中间表
+                db('zj')->insert($goods_id);
+                db('zj')->insert($goods_id);
+                $goods_j_id['goods_j_id'] = db('goods_j')->getLastInsID();
+                db('zj')->where('goods_j_id',0)->update($goods_j_id);
             }
-            $Model->insertAll($inser_data);
 
+
+//            $Model->insertAll($inser_data);
+
+            // $goods_id_j = db('zj')->where()
 //            if ($result) {
 //                return json(['code' => 1]);
 //            } else {
