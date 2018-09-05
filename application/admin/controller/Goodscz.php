@@ -51,7 +51,9 @@ class Goodscz extends Controller
             $start_s = input('post.start_s');;
             $category_id = input('post.category_id');;
             $inser_data = array();
+
             foreach ($data as $j => $datum) {
+
                 $inserts['name'] = $inser_data[]['name'] = $datum['name'];
                 $inserts['start_s'] = $inser_data[$j]['start_s'] = $start_s;
                 $inserts['url_code'] = $inser_data[$j]['url_code'] = $url_code;
@@ -59,12 +61,19 @@ class Goodscz extends Controller
                 $Model->insert($inserts);
                 $goods_id['goods_id'] = db('goods')->getLastInsID();
                 //获取所有Goods_id 存入中间表
-                db('zj')->insert($goods_id);
-                db('zj')->insert($goods_id);
-                $goods_j_id['goods_j_id'] = db('goods_j')->getLastInsID();
-                db('zj')->where('goods_j_id',0)->update($goods_j_id);
-            }
-
+                $zhData = [];
+                $goods_j_id = Db::table('goods_j')->field('id')->select();
+                foreach ($goods_j_id as $z => $value) {
+                    //db('zj')->where('goods_j_id', 0)->update(['goods_j_id' => $value['id']]);
+                    $zhData[$z] = [
+                        'goods_id' => $goods_id['goods_id'],
+                        'goods_j_id' => $value['id'],
+                    ];
+                }
+                db('zj')->insertAll($zhData);
+                //  $sql = Db::table('goods_j_id')->getLastSql();
+                // var_dump($sql);
+            }die;
 
 //            $Model->insertAll($inser_data);
 
