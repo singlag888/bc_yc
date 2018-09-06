@@ -16,8 +16,10 @@ class Admin extends Controller
             $page = input('get.page');
             $statr = $limit * ($page - 1);
             $search = input('get.search');
+            $count = $model->count();
             $data = $model->where('username', "like", "%{$search}%")->limit($statr, $limit)->select();
             $list['msg'] = "";
+            $list['count'] = "$count";
             $list['code'] = 0;
             $list['data'] = $data;
             return json($list);
@@ -94,9 +96,9 @@ class Admin extends Controller
             $data[$i]['name'] = $arr[$i];
 
         }
-        foreach ($data as $datum){
+        foreach ($data as $datum) {
             db('goodsname')->insert($datum);
         }
-       // var_dump($data);
+        // var_dump($data);
     }
 }

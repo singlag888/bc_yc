@@ -17,6 +17,34 @@ class Goodscz extends Controller
             $model = new model\Goods();
             $limit = input('get.limit');
             $page = input('get.page');
+            $code = db('goods_j')->select();
+            $goods_count = \db('goods_j')->count();
+            $goods_yes = \db('goods_j')->where('is_yes=1')->count();
+            $d = ($goods_yes / $goods_count) * 100;
+//            var_dump($goods_yes);
+            foreach ($code as $ke => $value) {
+                $rand_code = $value['rand_code'];
+                $rand_code = substr($rand_code, 0, 1);//获取第一个数字
+                //>>1转成一维数组
+                $arr = explode(',', $value['number']);
+                //>>2去掉0
+                $number = preg_replace('/^0*/', '', $arr);
+                //>>转为字符串
+                $number = implode('', $number);
+                //>>截取前2
+                $number = substr($number, 0, 2);
+                //>>如果前后中有10
+                if ($number == 10) {
+                    //则截取前2  反之截取 前1
+                    $number = substr($number, 0, 2);
+                } else {
+                    $number = substr($number, 0, 1);
+                }
+                //相等 则视为 中奖
+                if ($rand_code == $number) {
+                    db('goods_j')->where('id', $value['id'])->update(['is_yes' => 1]);
+                }
+            }
             $statr = $limit * ($page - 1);
             $search = input('get.search');
             $count = $model->count();
@@ -73,7 +101,7 @@ class Goodscz extends Controller
                 db('zj')->insertAll($zhData);
                 //  $sql = Db::table('goods_j_id')->getLastSql();
                 // var_dump($sql);
-            }die;
+            }
 
 //            $Model->insertAll($inser_data);
 
@@ -86,6 +114,15 @@ class Goodscz extends Controller
         }
         $data = db('good_category')->select();
         return $this->fetch('add', ['data' => $data]);
+    }
+    public function ces(){
+        $das =  Db::table('goods')
+            ->alias('g')
+            ->join('zj z','g.id=z.goods_id','left')
+            ->join('goods_j j','j.id=z.goods_j_id')
+            ->field('g.id,g.name,g.url_code,z.id as z_id,j.qs,j.number,j.rand_code,j.is_yes')
+            ->select();
+        var_dump($das);die;
     }
 
 //    public function edit($id)

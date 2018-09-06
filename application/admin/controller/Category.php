@@ -12,12 +12,14 @@ class Category extends Controller
     {
         if (Request()->isAjax()) {
             $model = new model\Category();
+            $count = $model->count();
             $limit = input('get.limit');
             $page = input('get.page');
             $statr = $limit * ($page - 1);
             $search = input('get.search');
             $data = $model->where('name', "like", "%{$search}%")->limit($statr, $limit)->select();
             $list['msg'] = "";
+            $list['count'] = "$count";
             $list['code'] = 0;
             $list['data'] = $data;
             return json($list);
